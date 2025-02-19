@@ -2,13 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-	<ImplicitUsings>disable</ImplicitUsings>
-	<Nullable>disable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Text.Json" Version="9.0.0" />
-  </ItemGroup>
 
 </Project>

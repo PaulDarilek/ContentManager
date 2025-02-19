@@ -41,19 +41,19 @@ namespace ContentManagement.Compression
         public static uint ToHashCrc32(this byte[] buffer)
         {
             buffer.ThrowIfArgumentNull(nameof(buffer));
-            uint crc32 = GetCrc32Async(buffer).GetAwaiter().GetResult();
+            uint crc32 = buffer.GetCrc32Async().GetAwaiter().GetResult();
             return crc32;
         }
 
         public static uint ToHashCrc32(this Stream input)
         {
             input.ThrowIfArgumentNull(nameof(input));
-            uint crc32 = GetCrc32Async(input).GetAwaiter().GetResult();
+            uint crc32 = input.GetCrc32Async().GetAwaiter().GetResult();
             return crc32;
         }
 
         public static Task<uint> GetCrc32Async(this byte[] buffer)
-            => GetCrc32Async(new MemoryStream(buffer));
+            => new MemoryStream(buffer).GetCrc32Async();
 
         public static async Task<uint> GetCrc32Async(this Stream stream, CancellationToken cancellationToken = default)
         {

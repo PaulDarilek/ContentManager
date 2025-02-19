@@ -10,7 +10,7 @@ namespace ContentManagement
         /// <summary>Parse (CR|LF) separated lines of text</summary>
         public static string[] SplitToLines(this string multiLineText, string delimitors = "\r\n", bool removeEmptyLines = true)
         {
-            if(string.IsNullOrEmpty(multiLineText))
+            if (string.IsNullOrEmpty(multiLineText))
                 return Array.Empty<string>();
 
             if (string.IsNullOrEmpty(delimitors))
@@ -36,11 +36,11 @@ namespace ContentManagement
                 if (indexOf > 0) // ignore if equals starts the line.
                 {
                     var key = line.Substring(0, indexOf).Trim();
-                    var value = 
-                        line.Length > (indexOf + 1) ? 
-                        line.Substring(indexOf + 1).Trim() : 
+                    var value =
+                        line.Length > indexOf + 1 ?
+                        line.Substring(indexOf + 1).Trim() :
                         string.Empty;
-                    
+
                     yield return new KeyValuePair<string, string>(key, value);
                 }
             }
@@ -61,7 +61,7 @@ namespace ContentManagement
                     {
                         dict[pair.Key] = pair.Value;
                     }
-                        
+
                 }
             }
 
@@ -100,11 +100,11 @@ namespace ContentManagement
 
             foreach (var item in keyValuePairs)
             {
-                if(!properties.ContainsKey(item.Key))
+                if (!properties.ContainsKey(item.Key))
                 {
                     properties.Add(item.Key, item.Value);
                 }
-                else if(replace)
+                else if (replace)
                 {
                     properties[item.Key] = item.Value;
                 }
@@ -112,15 +112,15 @@ namespace ContentManagement
         }
 
         [DebuggerStepThrough]
-        public static string FirstNotNullOrWhiteSpace(this string original, string otherValue) 
+        public static string FirstNotNullOrWhiteSpace(this string original, string otherValue)
             => !string.IsNullOrWhiteSpace(original) ? original : !string.IsNullOrWhiteSpace(otherValue) ? original : string.Empty;
 
         [DebuggerStepThrough]
         public static string FirstNotNullOrWhiteSpace(this string original, params string[] otherValues)
         {
-            if(!string.IsNullOrWhiteSpace(original))
+            if (!string.IsNullOrWhiteSpace(original))
                 return original;
-            return otherValues.FirstOrDefault(x=> !string.IsNullOrWhiteSpace(x)) ?? string.Empty;
+            return otherValues.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x)) ?? string.Empty;
         }
 
     }

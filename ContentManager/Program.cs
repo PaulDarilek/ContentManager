@@ -1,4 +1,6 @@
 ﻿using ContentManagement;
+using FileManagement;
+using FileManagement.Database.SqLite;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
@@ -21,7 +23,7 @@ public static class Program
             new CommandType(nameof(DeleteFile), DeleteFile) { MinParms = 0, MaxParms = 100 , Description = "" },
         ]);
 
-    private static ContentManagement.FileManager? Manager { get; set; }
+    private static FileManager? Manager { get; set; }
     private static FileScanner FileScanner { get; } = new FileScanner();
     private static bool RecurseSwitch { get; set; }
     private static bool ComputeHashSwitch { get; set; }
@@ -32,15 +34,13 @@ public static class Program
 
     public static void Main(string[] args)
     {
+        var settings = GetAppSettings(args);
 
-        var settings = GetAppSettings();
-
-        var contentDb = new ContentManagement.Storage.Sqlite.ContentStore(settings.ContentMangementConnectionString);
-        Manager = new ContentManagement.FileManager(contentDb);
+        var contentDb = new FileRepository(settings.FileManagementConnectionString);
+        Manager = new FileManager(contentDb) { WriteLine = Console.WriteLine };
 
         GetDrives();
 
-        settings.Arguments.AddRange(args);
         Parser.Parse([.. settings.Arguments]);
         Parser.PromptForActions();
 
@@ -74,18 +74,20 @@ public static class Program
         }
     }
 
-    public static AppSettings GetAppSettings()
+    public static AppSettings GetAppSettings(string[] args)
     {
         var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
                 .AddUserSecrets(Assembly.GetExecutingAssembly())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
 
         IConfiguration config = builder.Build();
         var section = config.GetSection(nameof(AppSettings));
         AppSettings settings = config.GetSection(nameof(AppSettings)).Get<AppSettings>() ?? new AppSettings();
-        settings.ContentMangementConnectionString = Environment.ExpandEnvironmentVariables(settings.ContentMangementConnectionString);
+        settings.FileManagementConnectionString = Environment.ExpandEnvironmentVariables(settings.FileManagementConnectionString);
+        
+        settings.Arguments.AddRange(args);
         return settings;
     }
 
@@ -104,16 +106,12 @@ public static class Program
             Manager?.Scan(files,ComputeHashSwitch);
         }
     }
-
-    
+        
     /// <summary>Compute Hashhes for files on a drive</summary>
     private static void HashCodesForDrive(IEnumerable<string> drives) {
-        if(!drives.Any())
+        foreach (var driveLetter in drives)
         {
-            drives = Manager!.Drives.Values.Select(d => d.DriveLetter);
-        }
-        foreach (var drive in drives)
-        {
+            var drive = Manager!.GetDrive(new DriveInfo(driveLetter));
             Manager!.HashFilesForDrive(drive);
         }
     }

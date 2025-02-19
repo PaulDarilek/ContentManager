@@ -19,14 +19,16 @@
 	  <PackageReference Include="Ignore" Version="0.2.1" />
   </ItemGroup>
 
-
   <ItemGroup>
-    <ProjectReference Include="..\ContentManagement.Storage.Sqlite\ContentManagement.Storage.Sqlite.csproj" />
     <ProjectReference Include="..\ContentManagement\ContentManagement.csproj" />
+    <ProjectReference Include="..\DocumentManagement.Database.Sqllite\DocumentManagement.Database.Sqllite.csproj" />
+    <ProjectReference Include="..\DocumentManagement\DocumentManagement.csproj" />
+    <ProjectReference Include="..\FileManagement.Database.SqLite\FileManagement.Database.SqLite.csproj" />
+    <ProjectReference Include="..\FileManagement\FileManagement.csproj" />
     <ProjectReference Include="..\WindowsInfo\WindowsInfo.csproj" />
   </ItemGroup>
 
-
+	
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

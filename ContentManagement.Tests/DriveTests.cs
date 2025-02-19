@@ -1,6 +1,6 @@
 using ContentManagement.Models;
 
-namespace ContentManagement.Tests;
+namespace ContentManager.Tests;
 
 public class DriveTests
 {
